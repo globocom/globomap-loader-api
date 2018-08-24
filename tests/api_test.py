@@ -19,11 +19,11 @@ import unittest
 from mock import Mock
 from mock import patch
 
-from globomap_core_loader.api.app import create_app
-from globomap_core_loader.api.database import destroy_db
-from globomap_core_loader.api.database import init_db
-from globomap_core_loader.api.job.models import Job
-from globomap_core_loader.api.job.models import JobError
+from globomap_loader_api.api.app import create_app
+from globomap_loader_api.api.database import destroy_db
+from globomap_loader_api.api.database import init_db
+from globomap_loader_api.api.job.models import Job
+from globomap_loader_api.api.job.models import JobError
 from tests.util import open_json
 
 
@@ -116,7 +116,7 @@ class ApiTestCase(unittest.TestCase):
 
     def _mock_rabbitmq_client(self, data=None):
         rabbit_mq_mock = patch(
-            'globomap_core_loader.api.facade.LoaderAPIFacade._get_rabbit_mq_client').start()
+            'globomap_loader_api.api.facade.LoaderAPIFacade._get_rabbit_mq_client').start()
         post_message_mock = Mock()
         rabbit_mq_mock.return_value = post_message_mock
         if type(data) is bool:

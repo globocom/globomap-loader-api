@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
    Copyright 2018 Globo.com
 
@@ -14,9 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from migrate.versioning.shell import main
+from os import environ
 
-from globomap_loader_api.settings import SQLALCHEMY_DATABASE_URI
+from globomap_loader_api.api.wsgi import application
 
 if __name__ == '__main__':
-    main(url=SQLALCHEMY_DATABASE_URI, repository='./migrations/')
+    application.run(
+        '0.0.0.0',
+        int(environ.get('PORT', '5000')),
+        debug=True,
+        threaded=True
+    )

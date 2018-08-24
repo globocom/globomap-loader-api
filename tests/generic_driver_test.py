@@ -18,7 +18,7 @@ import unittest
 from mock import Mock
 from mock import patch
 
-from globomap_core_loader.driver.generic import GenericDriver
+from globomap_loader_api.driver.generic import GenericDriver
 from tests.util import open_json
 
 
@@ -43,7 +43,7 @@ class TestGenericDriver(unittest.TestCase):
 
     def _mock_rabbitmq_client(self, return_data):
         rabbit_mq_mock = patch(
-            'globomap_core_loader.driver.generic.RabbitMQClient').start()
+            'globomap_loader_api.driver.generic.RabbitMQClient').start()
         rabbit_mq = Mock()
         rabbit_mq_mock.return_value = rabbit_mq
         rabbit_mq.get_message.side_effect = [return_data, (None, None)]

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
    Copyright 2018 Globo.com
 
@@ -14,9 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from migrate.versioning.shell import main
+from globomap_loader_api.api.v2 import api
+from globomap_loader_api.api.v2 import blueprint
+from globomap_loader_api.api.v2.endpoints.auth import ns as auth_ns
+from globomap_loader_api.api.v2.endpoints.driver_api import ns as driver_api_namespace
+from globomap_loader_api.api.v2.endpoints.healthcheck import ns as healthcheck_ns
 
-from globomap_loader_api.settings import SQLALCHEMY_DATABASE_URI
+api.add_namespace(auth_ns)
+api.add_namespace(driver_api_namespace)
+api.add_namespace(healthcheck_ns)
 
-if __name__ == '__main__':
-    main(url=SQLALCHEMY_DATABASE_URI, repository='./migrations/')
+__all__ = ['api', 'blueprint']

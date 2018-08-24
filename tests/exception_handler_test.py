@@ -19,7 +19,7 @@ from mock import Mock
 from mock import patch
 from pika.exceptions import ConnectionClosed
 
-from globomap_core_loader.loader.loader import UpdateExceptionHandler
+from globomap_loader_api.loader.loader import UpdateExceptionHandler
 
 
 class TestExceptionHandler(unittest.TestCase):
@@ -41,7 +41,7 @@ class TestExceptionHandler(unittest.TestCase):
 
     def _mock_rabbit_mq_client(self, returns):
         rabbit_mq_mock = patch(
-            'globomap_core_loader.loader.loader.RabbitMQClient').start()
+            'globomap_loader_api.loader.loader.RabbitMQClient').start()
         rabbit_mq = Mock()
         rabbit_mq_mock.return_value = rabbit_mq
         rabbit_mq.post_message.side_effect = returns

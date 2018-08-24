@@ -18,7 +18,7 @@ import unittest
 from mock import MagicMock
 from mock import patch
 
-from globomap_core_loader.rabbitmq import RabbitMQClient
+from globomap_loader_api.rabbitmq import RabbitMQClient
 
 
 class TestRabbitMQClient(unittest.TestCase):
@@ -57,7 +57,7 @@ class TestRabbitMQClient(unittest.TestCase):
         )
 
     def _mock_pika(self, message):
-        pika_mock = patch('globomap_core_loader.rabbitmq.pika').start()
+        pika_mock = patch('globomap_loader_api.rabbitmq.pika').start()
         pika_mock.ConnectionParameters.return_value = MagicMock()
         connection_mock = MagicMock()
         channel_mock = MagicMock()

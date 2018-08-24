@@ -33,10 +33,10 @@ services:
             context: ./
             dockerfile: scripts/docker/Dockerfile_api
         ports:
-            - "${GMAP_LOADER_API_PORT}:5003"
-            - "${GMAP_LOADER_API_DEBUG_PORT}:5004"
+            - "${GMAP_LOADER_API_PORT}:5000"
+            - "${GMAP_LOADER_API_DEBUG_PORT}:5001"
         env_file:
-            - ./scripts/docker/env/globomap-loader-api.env
+            - ./scripts/docker/globomap.env
         volumes:
             - .:/app
         networks:
@@ -46,25 +46,6 @@ services:
             - db
             - queue
         external_links:
-            - queue:globomap_loader_queue
-
-    loader:
-        container_name: globomap_loader
-        build:
-            context: ./
-            dockerfile: scripts/docker/Dockerfile_loader
-        env_file:
-            - ./scripts/docker/env/globomap-loader.env
-        volumes:
-            - .:/app
-        networks:
-            - globomap-api_globomap_net
-        command: sh ./scripts/docker/loader/docker-start-loader.sh
-        depends_on:
-            - db
-            - queue
-        external_links:
-            - globomap_api
             - queue:globomap_loader_queue
 
 networks:

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
    Copyright 2018 Globo.com
 
@@ -14,9 +13,23 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from migrate.versioning.shell import main
+import functools
 
-from globomap_loader_api.settings import SQLALCHEMY_DATABASE_URI
+from flask import request
 
-if __name__ == '__main__':
-    main(url=SQLALCHEMY_DATABASE_URI, repository='./migrations/')
+from globomap_loader_api.api.v2.auth.facade import validate_token
+
+
+def permission_classes(permission_classes):
+    def outer(func):
+        @functools.wraps(func)
+        def inner(self, *args, **kwargs):
+
+            token = request.headers.get('Authorization')
+            auth_inst = validate_token(token)
+            if auth_inst:
+                for permission_class in permission_classes:
+                    permission_class(auth_inst)
+            return func(self, *args, **kwargs)
+        return inner
+    return outer

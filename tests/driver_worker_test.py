@@ -18,11 +18,11 @@ import unittest
 from mock import MagicMock
 from mock import Mock
 
-from globomap_core_loader.api.database import destroy_db
-from globomap_core_loader.api.database import init_db
-from globomap_core_loader.api.job.models import Job
-from globomap_core_loader.loader.globomap import GloboMapException
-from globomap_core_loader.loader.loader import DriverWorker
+from globomap_loader_api.api.database import destroy_db
+from globomap_loader_api.api.database import init_db
+from globomap_loader_api.api.job.models import Job
+from globomap_loader_api.loader.globomap import GloboMapException
+from globomap_loader_api.loader.loader import DriverWorker
 from tests.util import open_json
 
 

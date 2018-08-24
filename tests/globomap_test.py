@@ -17,13 +17,13 @@ import unittest
 
 from mock import patch
 
-from globomap_core_loader.loader.globomap import GloboMapClient
+from globomap_loader_api.loader.globomap import GloboMapClient
 
 
 class TestGloboMapCllient(unittest.TestCase):
 
     def setUp(self):
-        patch('globomap_core_loader.loader.globomap.Session').start()
+        patch('globomap_loader_api.loader.globomap.Session').start()
         self.globomap_client = GloboMapClient('http://localhost:8080')
 
     @classmethod

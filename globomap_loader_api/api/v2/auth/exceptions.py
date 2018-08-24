@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
    Copyright 2018 Globo.com
 
@@ -14,9 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from migrate.versioning.shell import main
 
-from globomap_loader_api.settings import SQLALCHEMY_DATABASE_URI
 
-if __name__ == '__main__':
-    main(url=SQLALCHEMY_DATABASE_URI, repository='./migrations/')
+class AuthException(Exception):
+
+    def __init__(self, message):
+        super(AuthException, self).__init__(message)
+
+        self.message = message

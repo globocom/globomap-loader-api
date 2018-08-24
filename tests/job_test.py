@@ -15,10 +15,10 @@
 """
 import unittest
 
-from globomap_core_loader.api.database import destroy_db
-from globomap_core_loader.api.database import init_db
-from globomap_core_loader.api.job.models import Job
-from globomap_core_loader.api.job.models import JobError
+from globomap_loader_api.api.database import destroy_db
+from globomap_loader_api.api.database import init_db
+from globomap_loader_api.api.job.models import Job
+from globomap_loader_api.api.job.models import JobError
 
 
 class TestJob(unittest.TestCase):

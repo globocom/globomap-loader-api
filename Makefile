@@ -1,4 +1,4 @@
-# Makefile for globomap-core-loader
+# Makefile for globomap-loader-api
 
 # Pip executable path
 PIP := $(shell which pip)
@@ -19,18 +19,18 @@ clean: ## Clear *.pyc files, etc
 
 compile: clean ## Compile source code
 	@echo "Compiling source code..."
-	@python3.6 -tt -m compileall globomap_core_loader
-	@pycodestyle --format=pylint --statistics globomap_core_loader
+	@python3.6 -tt -m compileall globomap_loader_api
+	@pycodestyle --format=pylint --statistics globomap_loader_api
 
 tests: clean ## Run tests
 	@echo "Running tests..."
 	@export ENV=test
-	@nosetests --verbose --rednose  --nocapture --cover-package=globomap_core_loader --with-coverage
+	@nosetests --verbose --rednose  --nocapture --cover-package=globomap_loader_api --with-coverage
 
 tests_ci: clean ## Make tests to CI
 	@echo "Running tests..."
 	@export ENV=test
-	@nosetests --verbose --rednose  --nocapture --cover-package=globomap_core_loader
+	@nosetests --verbose --rednose  --nocapture --cover-package=globomap_loader_api
 
 run_version_control: ## Run version control
 	@echo "Running version control..."
@@ -40,44 +40,18 @@ run_migrations: run_version_control ## Run migrations
 	@echo "Running migrations..."
 	@python3.6 migrations/manage.py upgrade
 
-run_loader: run_migrations ## Run the loader
-	@echo "Running loader..."
-	@python3.6 scripts/run_loader.py $(module)
-
-run_reset_loader: ## Run the reset loader app
-	@echo "Running reset loader..."
-	@python3.6 scripts/run_reset_loader.py
-
 run_api: run_migrations ## Run the loader API app
 	@echo "Running api..."
-	@python3.6 scripts/run_api.py
+	@gunicorn -b 0.0.0.0:5001 globomap_loader_api.api.wsgi -w 4 --log-level WARNING
 
 deploy_api: ## Deploy API
 	@cp scripts/tsuru/Procfile_api Procfile
 	@cp scripts/docker/requirements/requirements_api.txt requirements.txt
 	@cp scripts/run_api.py run_api.py
-	@tsuru app-deploy -a $(project) Procfile requirements.txt requirements.apt globomap_core_loader run_api.py .python-version || true
+	@tsuru app-deploy -a $(project) Procfile requirements.txt requirements.apt globomap_loader_api run_api.py .python-version || true
 	@rm Procfile
 	@rm requirements.txt
 	@rm run_api.py
-
-deploy_loader: ## Deploy Loader
-	@cp scripts/tsuru/Procfile_loader Procfile
-	@cp scripts/docker/requirements/requirements_loader.txt requirements.txt
-	@cp scripts/run_loader.py run_loader.py
-	@tsuru app-deploy -a $(project) Procfile requirements.txt requirements.apt globomap_core_loader run_loader.py .python-version || true
-	@rm Procfile
-	@rm requirements.txt
-	@rm run_loader.py
-
-deploy_reset_loader: ## Deploy reset loader
-	@cp scripts/tsuru/Procfile_reset_loader Procfile
-	@cp scripts/docker/requirements/requirements_reset_loader.txt requirements.txt
-	@cp scripts/scheduler_reset_loader.py scheduler_reset_loader.py
-	@tsuru app-deploy -a $(project) Procfile requirements.txt requirements.apt globomap_core_loader scheduler_reset_loader.py .python-version || true
-	@rm Procfile
-	@rm requirements.txt
-	@rm scheduler_reset_loader.py
 
 containers_start:## Start containers
 	docker-compose --file $(DOCKER_COMPOSE_FILE) up -d

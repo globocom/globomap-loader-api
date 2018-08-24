@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
    Copyright 2018 Globo.com
 
@@ -14,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from migrate.versioning.shell import main
+from flask import Blueprint
+from flask_restplus import Api
 
-from globomap_loader_api.settings import SQLALCHEMY_DATABASE_URI
-
-if __name__ == '__main__':
-    main(url=SQLALCHEMY_DATABASE_URI, repository='./migrations/')
+blueprint = Blueprint('APIv2', __name__, url_prefix='/v2')
+api = Api(blueprint, version='2.0', title='GloboMap Loader API',
+          description='GloboMap Loader API')
