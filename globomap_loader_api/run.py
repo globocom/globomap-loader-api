@@ -15,7 +15,7 @@
 """
 from os import environ
 
-from globomap_loader_api.api.wsgi import application
+from globomap_loader_api.wsgi import application
 
 if __name__ == '__main__':
     application.run(
