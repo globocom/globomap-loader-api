@@ -36,7 +36,6 @@ class RabbitMQClient(object):
             self.connect()
 
     def post_message(self, exchange_name, key, message, confirm=True):
-        # import pdb; pdb.set_trace()
         self.verify_connection()
         try:
             published = self.channel.basic_publish(

@@ -97,6 +97,4 @@ ENV/
 .idea
 *.db
 
-Procfile
-
 docker-compose-temp.yml
