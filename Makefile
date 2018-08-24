@@ -42,7 +42,7 @@ run_migrations: run_version_control ## Run migrations
 
 run_api: run_migrations ## Run the loader API app
 	@echo "Running api..."
-	@gunicorn -b 0.0.0.0:5001 globomap_loader_api.api.wsgi -w 4 --log-level WARNING
+	@gunicorn -b 0.0.0.0:5001 globomap_loader_api.wsgi -w 4 --log-level WARNING
 
 deploy_api: ## Deploy API
 	@cp scripts/tsuru/Procfile_api Procfile
