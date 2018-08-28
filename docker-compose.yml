@@ -41,11 +41,9 @@ services:
             - .:/app
         networks:
             - globomap-api_globomap_net
-        command: make run_api
-        depends_on:
-            - db
-            - queue
+        # command: make run_api
         external_links:
+            - db:globomap_loader_db_mysql
             - queue:globomap_loader_queue
 
 networks:

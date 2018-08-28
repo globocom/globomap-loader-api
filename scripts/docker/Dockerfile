@@ -15,6 +15,7 @@ RUN apt-get install -y python3.6-venv
 
 RUN apt-get install -y git
 RUN apt-get install -y telnet
+RUN apt-get install -y curl
 
 # update pip
 RUN python3.6 -m pip install pip --upgrade
@@ -25,3 +26,7 @@ ADD . /app
 WORKDIR /app
 RUN export LC_CTYPE=UTF-8
 RUN pip install -r requirements.txt
+
+RUN ["chmod", "+x", "./scripts/docker/wait_rabbitmq_start.sh"]
+
+ENTRYPOINT [ "./scripts/docker/wait_rabbitmq_start.sh" ]
