@@ -17,7 +17,6 @@ from logging import config
 
 from flask import Flask
 
-from globomap_loader_api.api.database import Session
 from globomap_loader_api.api.facade import LoaderAPIFacade
 from globomap_loader_api.api.v1.api import blueprint as api_v1
 from globomap_loader_api.api.v2.api import blueprint as api_v2
@@ -40,15 +39,5 @@ def create_app():
 
     app.register_blueprint(api_v1)
     app.register_blueprint(api_v2)
-
-    @app.before_request
-    def create_session():
-        Session()
-
-    @app.teardown_appcontext
-    def shutdown_session(exception=None):
-        Session.remove()
-        if exception and Session.is_active:
-            Session.rollback()
 
     return app

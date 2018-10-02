@@ -16,7 +16,6 @@
 import json
 import logging
 
-from globomap_loader_api.api.job.models import Job
 from globomap_loader_api.rabbitmq import RabbitMQClient
 from globomap_loader_api.settings import GLOBOMAP_RMQ_EXCHANGE
 from globomap_loader_api.settings import GLOBOMAP_RMQ_HOST
@@ -41,35 +40,19 @@ class LoaderAPIFacade(object):
             GLOBOMAP_RMQ_PASSWORD, GLOBOMAP_RMQ_VIRTUAL_HOST
         )
 
-    def publish_updates(self, updates, driver_name, job_controller):
+    def publish_updates(self, updates, driver_name):
         if updates:
             try:
-                if job_controller is True:
-                    job = Job(driver_name, len(updates))
-                    for update in updates:
-                        update.update({
-                            'driver_name': driver_name,
-                            'jobid': job.uuid
-                        })
-                        self.rabbitmq.post_message(
-                            GLOBOMAP_RMQ_EXCHANGE, GLOBOMAP_RMQ_KEY,
-                            json.dumps(update, ensure_ascii=False), False
-                        )
-
-                    job.save()
-                    self.rabbitmq.confirm_publish()
-                    return job.uuid
-                else:
-                    for update in updates:
-                        update.update({
-                            'driver_name': driver_name
-                        })
-                        self.rabbitmq.post_message(
-                            GLOBOMAP_RMQ_EXCHANGE, GLOBOMAP_RMQ_KEY,
-                            json.dumps(update, ensure_ascii=False), False
-                        )
-                    self.rabbitmq.confirm_publish()
-                    return None
+                for update in updates:
+                    update.update({
+                        'driver_name': driver_name
+                    })
+                    self.rabbitmq.post_message(
+                        GLOBOMAP_RMQ_EXCHANGE, GLOBOMAP_RMQ_KEY,
+                        json.dumps(update, ensure_ascii=False), False
+                    )
+                self.rabbitmq.confirm_publish()
+                return None
             except:
                 logger.exception('Error publishing to rabbitmq')
                 self.rabbitmq.discard_publish()

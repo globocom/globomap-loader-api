@@ -14,19 +14,6 @@ services:
         networks:
             - globomap-api_globomap_net
 
-    db:
-        container_name: globomap_loader_db_mysql
-        image: mysql:5.7
-        ports:
-            - "${GMAP_DB_LOADER_PORT}:3306"
-        environment:
-            MYSQL_ALLOW_EMPTY_PASSWORD: 1
-            MYSQL_DATABASE: 'globomaploader'
-        volumes:
-            - globomap_loader_db_vol:/var/lib/mysql
-        networks:
-            - globomap-api_globomap_net
-
     api-loader:
         container_name: globomap_loader_api
         build:
@@ -43,7 +30,6 @@ services:
             - globomap-api_globomap_net
         # command: make run_api
         external_links:
-            - db:globomap_loader_db_mysql
             - queue:globomap_loader_queue
 
 networks:
