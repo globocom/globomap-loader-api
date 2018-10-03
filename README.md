@@ -43,10 +43,6 @@ All of the environment variables below must be set for the application to work p
 | GLOBOMAP_RMQ_EXCHANGE              | RabbitMQ updates exchange name                                            | globomap-updates-exchange               |
 | GLOBOMAP_RMQ_ERROR_EXCHANGE        | RabbitMQ error exchange name                                              | globomap-errors-exchange                |
 | GLOBOMAP_RMQ_BINDING_KEY           | RabbitMQ generic driver API binding key                                   | globomap.updates (default)              |
-| DATABASE_POOL_SIZE                 | Relational database connection pool size                                  | 20 (default)                            |
-| DATABASE_POOL_OVERFLOW             | Relational database connection pool overflow                              | 10 (default)                            |
-| DATABASE_POOL_RECYCLE              | Number of seconds in which an idle connection is refreshed                | 120 (default)                           |
-| SQLALCHEMY_DATABASE_URI            | The database URI that should be used for the connection                   | mysql://username:password@server/db     |
 | VARIABLES of globomap-auth-manager | [globomap-auth-manager](https://github.com/globocom/globomap-auth-manager)| --                                      |
 
  ## Documentation
