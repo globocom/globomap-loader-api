@@ -42,6 +42,9 @@ class RabbitMQClient(object):
                 exchange=exchange_name,
                 routing_key=key,
                 body=message,
+                properties=pika.BasicProperties(
+                    delivery_mode=2
+                ),
                 mandatory=True
             )
         except pika.exceptions.ConnectionClosed:

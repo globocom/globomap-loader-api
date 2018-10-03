@@ -3,6 +3,8 @@
 # Pip executable path
 PIP := $(shell which pip)
 
+PROJECT_HOME = "`pwd`"
+
 DOCKER_COMPOSE_FILE=$(shell make docker_file)
 
 help:
@@ -11,6 +13,9 @@ help:
 	@echo
 
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+setup: ## Install project dependencies
+	@pip install -r $(PROJECT_HOME)/requirements_test.txt
 
 clean: ## Clear *.pyc files, etc
 	@echo "Cleaning project ..."
@@ -35,15 +40,6 @@ tests_ci: clean ## Make tests to CI
 run_api: ## Run the loader API app
 	@echo "Running api..."
 	@gunicorn -b 0.0.0.0:5001 globomap_loader_api.wsgi -w 4 --log-level WARNING
-
-deploy_api: ## Deploy API
-	@cp scripts/tsuru/Procfile_api Procfile
-	@cp scripts/docker/requirements/requirements_api.txt requirements.txt
-	@cp scripts/run_api.py run_api.py
-	@tsuru app-deploy -a $(project) Procfile requirements.txt requirements.apt globomap_loader_api run_api.py .python-version || true
-	@rm Procfile
-	@rm requirements.txt
-	@rm run_api.py
 
 containers_start:## Start containers
 	docker-compose --file $(DOCKER_COMPOSE_FILE) up -d

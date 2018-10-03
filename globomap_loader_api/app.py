@@ -29,6 +29,7 @@ def create_app():
     app.config['LOGGER_HANDLER_POLICY'] = 'default'
     app.config['LOGGER_NAME'] = 'globomap_loader_api'
     app.config['BUNDLE_ERRORS'] = True
+    app.config['RESTPLUS_VALIDATE'] = True
     app.config['ERROR_404_HELP'] = False
     app.config.from_object('globomap_loader_api.settings')
 
