@@ -17,4 +17,4 @@ if [ "000" = "${HTTP_RET_CODE}" ]; then
         exit 2
 fi
 
-PYTHONPATH=`pwd`:$PYTHONPATH python3.6 globomap_loader_api/run.py
+make run

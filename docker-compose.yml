@@ -28,7 +28,6 @@ services:
             - .:/app
         networks:
             - globomap-api_globomap_net
-        # command: make run_api
         external_links:
             - queue:globomap_loader_queue
 

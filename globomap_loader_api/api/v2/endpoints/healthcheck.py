@@ -57,10 +57,17 @@ class Healthcheck(Resource):
 @ns.route('/deps/')
 class HealthcheckDeps(Resource):
 
-    @api.doc(responses={200: 'Success'})
+    @api.doc(responses={
+        200: 'Success',
+        503: 'Service Unavailable',
+    })
     def get(self):
         deps = _list_deps()
-        return deps, 200
+        status_code = 200
+        for _ in deps:
+            status_code = 503
+            break
+        return deps, status_code
 
 
 def _is_rabbitmq_ok():
@@ -75,15 +82,13 @@ def _is_rabbitmq_ok():
 
 
 def _is_auth_ok():
-    auth_inst = Auth()
-
-    status = True
-    if auth_inst.is_enable():
-        status = auth_inst.is_url_ok()
-
-    status = {
-        'status': status
-    }
+    try:
+        auth_inst = Auth()
+        status = {
+            'status': auth_inst.is_url_ok()
+        }
+    except:
+        status = {'status': False}
 
     return status
 

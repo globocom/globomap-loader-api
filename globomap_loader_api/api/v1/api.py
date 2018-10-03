@@ -16,9 +16,7 @@
 from globomap_loader_api.api.v1 import api
 from globomap_loader_api.api.v1 import blueprint
 from globomap_loader_api.api.v1.endpoints.driver_api import ns as driver_api_namespace
-from globomap_loader_api.api.v1.endpoints.healthcheck import ns as healthcheck_ns
 
 api.add_namespace(driver_api_namespace)
-api.add_namespace(healthcheck_ns)
 
 __all__ = ['api', 'blueprint']

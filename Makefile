@@ -37,9 +37,9 @@ tests_ci: clean ## Make tests to CI
 	@export ENV=test
 	@nosetests --verbose --rednose  --nocapture --cover-package=globomap_loader_api
 
-run_api: ## Run the loader API app
+run: ## Run the loader API app
 	@echo "Running api..."
-	@gunicorn -b 0.0.0.0:5001 globomap_loader_api.wsgi -w 4 --log-level WARNING
+	@PYTHONPATH=`pwd`:$PYTHONPATH python3.6 globomap_loader_api/run.py
 
 containers_start:## Start containers
 	docker-compose --file $(DOCKER_COMPOSE_FILE) up -d
