@@ -34,6 +34,7 @@ class CreateAuth(Resource):
     @api.doc(responses={
         200: 'Success',
         401: 'Unauthorized',
+        503: 'Service Unavailable'
     })
     @api.expect(api.schema_model('Auth', get_dict(SPECS.get('auth'))))
     def post(self):

@@ -49,7 +49,8 @@ class Updates(Resource):
         200: 'Success',
         400: 'Validation Error',
         401: 'Unauthorized',
-        403: 'Forbidden'
+        403: 'Forbidden',
+        503: 'Service Unavailable'
     })
     @permission_classes((permissions.Update,))
     @api.expect(api.schema_model('PostUpdates',
