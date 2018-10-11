@@ -3,7 +3,7 @@ services:
 
     queue:
         container_name: globomap_loader_queue
-        image: rabbitmq:3.6.9
+        image: rabbitmq:3.7.7
         ports:
             - "${GMAP_QUEUE_PORT}:5672"
             - "${GMAP_QUEUE_ADM_PORT}:15672"
