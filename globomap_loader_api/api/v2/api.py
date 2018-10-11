@@ -15,6 +15,7 @@
 """
 from globomap_loader_api.api.v2 import api
 from globomap_loader_api.api.v2 import blueprint
+from globomap_loader_api.api.v2 import handlers
 from globomap_loader_api.api.v2.endpoints.auth import ns as auth_ns
 from globomap_loader_api.api.v2.endpoints.driver_api import ns as driver_api_namespace
 from globomap_loader_api.api.v2.endpoints.healthcheck import ns as healthcheck_ns
@@ -23,4 +24,4 @@ api.add_namespace(auth_ns)
 api.add_namespace(driver_api_namespace)
 api.add_namespace(healthcheck_ns)
 
-__all__ = ['api', 'blueprint']
+__all__ = ['api', 'blueprint', 'handlers']

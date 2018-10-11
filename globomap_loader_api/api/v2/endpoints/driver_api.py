@@ -16,8 +16,6 @@
 from flask import current_app as app
 from flask import request
 from flask_restplus import Resource
-from jsonspec.validators.exceptions import ValidationError
-from werkzeug.exceptions import BadRequest
 
 from globomap_loader_api.api import util
 from globomap_loader_api.api.v2 import api
@@ -60,27 +58,15 @@ class Updates(Resource):
 
         response_header = {'X-REQUEST-ID': util.create_request_id()}
 
-        try:
-            data = request.get_json()
-            driver_name = request.headers.get('X-DRIVER-NAME', '*')
-            headers = {
-                'X-DRIVER-NAME': driver_name
-            }
-            headers.update(response_header)
-            app.config['LOADER_RMQ'].publish_updates(data, headers)
-            res = {
-                'message': 'Updates published successfully',
-            }
+        data = request.get_json()
+        driver_name = request.headers.get('X-DRIVER-NAME', '*')
+        headers = {
+            'X-DRIVER-NAME': driver_name
+        }
+        headers.update(response_header)
+        app.config['LOADER_RMQ'].publish_updates(data, headers)
+        res = {
+            'message': 'Updates published successfully',
+        }
 
-            return res, 202, response_header
-
-        except ValidationError as error:
-            app.logger.exception('Error sending updates to rabbitmq')
-            api.abort(400, errors=util.validate(error)), response_header
-        except BadRequest as err:
-            app.logger.exception('Error sending updates to rabbitmq')
-            api.abort(400, errors=err.description), response_header
-        except:
-            app.logger.exception('Error sending updates to rabbitmq')
-            res = {'message': 'Error sending updates to queue'}
-            return api.abort(500, errors=res), response_header
+        return res, 202, response_header

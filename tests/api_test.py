@@ -59,7 +59,6 @@ class ApiTestCase(unittest.TestCase):
             data=json.dumps([]),
             headers={'Content-Type': 'application/json'}
         )
-
         self.assertEqual(400, response.status_code)
         self.assertDictEqual({'': '[] is too short'},
                              json.loads(response.data)['errors'])

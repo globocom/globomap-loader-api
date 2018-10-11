@@ -13,15 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from flask import current_app as app
 from flask import request
 from flask_restplus import Resource
-from globomap_auth_manager import exceptions
 
 from globomap_loader_api.api.util import get_dict
 from globomap_loader_api.api.v2 import api
 from globomap_loader_api.api.v2.auth import facade
-from globomap_loader_api.api.v2.auth.exceptions import AuthException
 from globomap_loader_api.settings import SPECS
 
 ns = api.namespace(
@@ -40,29 +37,9 @@ class CreateAuth(Resource):
     def post(self):
         """Create token"""
 
-        try:
-            data = request.get_json()
-            if type(data) is dict:
-                username = data.get('username')
-                password = data.get('password')
-            else:
-                username = None
-                password = None
-            if not username or not password:
-                app.logger.error('Username and Password is required.')
-                api.abort(401, errors='Username and Password is required.')
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
 
-            token = facade.create_token(username, password)
-            return token, 200
-
-        except exceptions.Unauthorized:
-            app.logger.error('User %s not Unauthorized.', username)
-            api.abort(401, 'User not Unauthorized.')
-
-        except exceptions.AuthException:
-            app.logger.error('Auth Unavailable.')
-            api.abort(503, 'Auth Unavailable.')
-
-        except AuthException:
-            app.logger.error('Auth Unavailable.')
-            api.abort(503, 'Auth Unavailable.')
+        token = facade.create_token(username, password)
+        return token, 200

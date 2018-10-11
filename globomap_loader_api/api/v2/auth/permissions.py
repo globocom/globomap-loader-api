@@ -15,8 +15,7 @@
 """
 from flask import current_app as app
 
-from globomap_loader_api import settings
-from globomap_loader_api.api.v2 import api
+from globomap_loader_api.api.v2.auth import exceptions
 
 
 class BasePermission(object):
@@ -37,11 +36,11 @@ class BasePermission(object):
     def validate_token(self):
         token_data = self.auth.get_token_data_details()
         if not self.has_permission(token_data):
-            api.abort(403, 'User have not permission to this action')
-            app.logger.error('User have not permission to this action')
+            raise exceptions.AuthException(
+                'User have not permission to this action')
 
 
 class Update(BasePermission):
 
     def has_permission(self, token):
-        return self.has_perm(token, settings.LOADER_UPDATE)
+        return self.has_perm(token, app.config['LOADER_UPDATE'])
