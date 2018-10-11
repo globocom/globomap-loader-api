@@ -29,7 +29,7 @@ class TestRabbitMQClient(unittest.TestCase):
     def test_post_message(self):
         pika_mock, channel_mock = self._mock_pika(None)
         rabbitmq = RabbitMQClient('localhost', 5672, 'user', 'password', '/')
-        rabbitmq.post_message('exchange', 'key', 'message')
+        rabbitmq.post_message('exchange', 'key', 'message', {'x-header': 123})
 
         channel_mock.basic_publish.assert_called_once_with(
             body='message', exchange='exchange',
@@ -37,7 +37,8 @@ class TestRabbitMQClient(unittest.TestCase):
             properties=pika_mock.BasicProperties(),
             mandatory=True
         )
-        pika_mock.BasicProperties.assert_any_call(delivery_mode=2)
+        pika_mock.BasicProperties.assert_any_call(
+            delivery_mode=2, headers={'x-header': 123})
 
     def _mock_pika(self, message):
         pika_mock = patch('globomap_loader_api.rabbitmq.pika').start()

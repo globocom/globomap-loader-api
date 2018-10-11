@@ -22,15 +22,23 @@ from globomap_loader_api.api.v2 import api
 
 def create_token(username=None, password=None):
 
-    auth_inst = Auth()
-    auth_inst.set_credentials(username, password)
-    token = auth_inst.get_token_data()
+    try:
+        auth_inst = Auth()
+        auth_inst.set_credentials(username, password)
+        token = auth_inst.get_token_data()
 
-    return token
+        return token
+
+    except Exception:
+        api.abort(503, errors='Auth service unavailable')
 
 
 def validate_token(token):
-    auth_inst = Auth()
+    try:
+        auth_inst = Auth()
+    except Exception:
+        api.abort(503, errors='Auth service unavailable')
+
     try:
         auth_inst.set_token(token)
         auth_inst.validate_token()
@@ -45,3 +53,5 @@ def validate_token(token):
         err_msg = 'Error to validate token'
         app.logger.exception(err_msg)
         api.abort(503)
+    except Exception:
+        api.abort(503, errors='Auth service unavailable')

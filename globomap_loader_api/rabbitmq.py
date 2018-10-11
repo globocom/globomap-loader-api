@@ -35,7 +35,7 @@ class RabbitMQClient(object):
         if self.connection.is_closed or self.connection.is_closing:
             self.connect()
 
-    def post_message(self, exchange_name, key, message, confirm=True):
+    def post_message(self, exchange_name, key, message, headers, confirm=True):
         self.verify_connection()
         try:
             published = self.channel.basic_publish(
@@ -43,13 +43,14 @@ class RabbitMQClient(object):
                 routing_key=key,
                 body=message,
                 properties=pika.BasicProperties(
-                    delivery_mode=2
+                    delivery_mode=2,
+                    headers=headers
                 ),
                 mandatory=True
             )
         except pika.exceptions.ConnectionClosed:
             self.connect()
-            return self.post_message(exchange_name, key, message, confirm)
+            return self.post_message(exchange_name, key, message, headers, confirm)
 
         if published and confirm:
             self.confirm_publish()

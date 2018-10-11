@@ -51,7 +51,6 @@ class ApiTestCase(unittest.TestCase):
         self.assertEqual('Updates published successfully',
                          response_json['message'])
         self.assertEqual(1, rabbit_mock.post_message.call_count)
-        self.assertEqual(1, rabbit_mock.confirm_publish.call_count)
 
     def test_send_updates_no_updates_found(self):
         rabbit_mock = self._mock_rabbitmq_client(True)

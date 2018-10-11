@@ -40,20 +40,17 @@ class LoaderAPIFacade(object):
             GLOBOMAP_RMQ_PASSWORD, GLOBOMAP_RMQ_VIRTUAL_HOST
         )
 
-    def publish_updates(self, updates, driver_name):
+    def publish_updates(self, updates, headers):
         if updates:
             try:
                 for update in updates:
-                    update.update({
-                        'driver_name': driver_name
-                    })
                     self.rabbitmq.post_message(
                         GLOBOMAP_RMQ_EXCHANGE, GLOBOMAP_RMQ_KEY,
-                        json.dumps(update, ensure_ascii=False), False
+                        json.dumps(update, ensure_ascii=False),
+                        headers, True
                     )
-                self.rabbitmq.confirm_publish()
                 return None
             except:
                 logger.exception('Error publishing to rabbitmq')
                 self.rabbitmq.discard_publish()
-                raise Exception('Failed to sendo updates to queue')
+                raise Exception('Failed to send updates to queue')

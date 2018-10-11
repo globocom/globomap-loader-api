@@ -57,24 +57,29 @@ class Updates(Resource):
     def post(self):
         """Post a list of messages."""
 
+        response_header = {'X-REQUEST-ID': util.create_request_id()}
+
         try:
             data = request.get_json()
             driver_name = request.headers.get('X-DRIVER-NAME', '*')
-            app.config['LOADER_RMQ'].publish_updates(
-                data, driver_name)
+            headers = {
+                'X-DRIVER-NAME': driver_name
+            }
+            headers.update(response_header)
+            app.config['LOADER_RMQ'].publish_updates(data, headers)
             res = {
                 'message': 'Updates published successfully',
             }
 
-            return res, 202
+            return res, 202, response_header
 
         except ValidationError as error:
             app.logger.exception('Error sending updates to rabbitmq')
-            api.abort(400, errors=util.validate(error))
+            api.abort(400, errors=util.validate(error)), response_header
         except BadRequest as err:
             app.logger.exception('Error sending updates to rabbitmq')
-            api.abort(400, errors=err.description)
+            api.abort(400, errors=err.description), response_header
         except:
             app.logger.exception('Error sending updates to rabbitmq')
             res = {'message': 'Error sending updates to queue'}
-            return api.abort(500, errors=res)
+            return api.abort(500, errors=res), response_header

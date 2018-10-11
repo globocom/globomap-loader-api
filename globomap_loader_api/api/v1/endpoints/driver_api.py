@@ -35,8 +35,11 @@ class Updates(Resource):
         try:
             data = request.get_json()
             driver_name = request.headers.get('X-DRIVER-NAME', '*')
+            headers = {
+                'X-DRIVER-NAME': driver_name
+            }
             app.config['LOADER_RMQ'].publish_updates(
-                data, driver_name)
+                data, headers)
             res = {
                 'message': 'Updates published successfully',
             }

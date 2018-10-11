@@ -14,6 +14,7 @@
    limitations under the License.
 """
 import json
+import uuid
 
 from jsonspec.validators import load
 
@@ -53,3 +54,7 @@ def validate(error):
     }
 
     return res
+
+
+def create_request_id():
+    return str(uuid.uuid4())
