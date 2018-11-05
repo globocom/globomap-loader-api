@@ -84,7 +84,6 @@ class ApiTestCase(unittest.TestCase):
 
         self.assertEqual(500, response.status_code)
         self.assertEqual(1, rabbit_mock.post_message.call_count)
-        self.assertEqual(1, rabbit_mock.discard_publish.call_count)
 
     def _mock_rabbitmq_client(self, data=None):
         rabbitmq_mock = self.loader_api_facade.return_value

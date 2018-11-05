@@ -19,47 +19,37 @@ import pika
 class RabbitMQClient(object):
 
     def __init__(self, host, port, user, password, vhost):
-        credentials = pika.PlainCredentials(user, password)
-        parameters = pika.ConnectionParameters(
-            host=host, port=port,
-            virtual_host=vhost, credentials=credentials
-        )
-        self.parameters = parameters
+        self._params = pika.ConnectionParameters(
+            host=host, port=port, virtual_host=vhost,
+            credentials=pika.PlainCredentials(user, password))
+        self._conn = None
+        self._channel = None
         self.connect()
 
     def connect(self):
-        self.connection = pika.BlockingConnection(self.parameters)
-        self.channel = self.connection.channel()
+        if not self._conn or self._conn.is_closed:
+            self._conn = pika.BlockingConnection(self._params)
+            self._channel = self._conn.channel()
 
-    def verify_connection(self):
-        if self.connection.is_closed or self.connection.is_closing:
-            self.connect()
+    def _publish(self, exchange_name, key, message, headers):
+        self._channel.confirm_delivery()
+        published = self._channel.basic_publish(
+            exchange=exchange_name,
+            routing_key=key,
+            body=message,
+            properties=pika.BasicProperties(
+                delivery_mode=2,
+                headers=headers
+            ),
+            mandatory=True
+        )
+        return published
 
-    def post_message(self, exchange_name, key, message, headers, confirm=True):
-        self.verify_connection()
+    def post_message(self, exchange_name, key, message, headers):
+        """Publish message, reconnecting if necessary."""
+
         try:
-            published = self.channel.basic_publish(
-                exchange=exchange_name,
-                routing_key=key,
-                body=message,
-                properties=pika.BasicProperties(
-                    delivery_mode=2,
-                    headers=headers
-                ),
-                mandatory=True
-            )
+            return self._publish(exchange_name, key, message, headers)
         except pika.exceptions.ConnectionClosed:
             self.connect()
-            return self.post_message(exchange_name, key, message, headers, confirm)
-
-        if published and confirm:
-            self.confirm_publish()
-        return confirm
-
-    def confirm_publish(self):
-        self.channel.tx_select()
-        self.channel.tx_commit()
-
-    def discard_publish(self):
-        self.channel.tx_select()
-        self.channel.tx_rollback()
+            return self._publish(exchange_name, key, message, headers)

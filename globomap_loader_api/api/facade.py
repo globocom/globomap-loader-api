@@ -47,10 +47,8 @@ class LoaderAPIFacade(object):
                     self.rabbitmq.post_message(
                         GLOBOMAP_RMQ_EXCHANGE, GLOBOMAP_RMQ_KEY,
                         json.dumps(update, ensure_ascii=False),
-                        headers, True
+                        headers
                     )
                 return None
             except:
-                logger.exception('Error publishing to rabbitmq')
-                self.rabbitmq.discard_publish()
                 raise Exception('Failed to send updates to queue')
