@@ -26,16 +26,13 @@ from tests.util import open_json
 class ApiTestCase(unittest.TestCase):
 
     def setUp(self):
+        self.loader_api_facade = patch(
+            'globomap_loader_api.app.LoaderAPIFacade._get_rabbit_mq_client').start()
         self.app = create_app().test_client()
         self._mock_token()
 
     def tearDown(self):
-        self.loader_api_facade.reset_mock()
-
-    @classmethod
-    def setUpClass(cls):
-        cls.loader_api_facade = patch(
-            'globomap_loader_api.app.LoaderAPIFacade._get_rabbit_mq_client').start()
+        patch.stopall()
 
     def test_send_updates(self):
         rabbit_mock = self._mock_rabbitmq_client(True)

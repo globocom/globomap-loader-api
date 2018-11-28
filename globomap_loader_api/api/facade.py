@@ -26,7 +26,7 @@ from globomap_loader_api.settings import GLOBOMAP_RMQ_USER
 from globomap_loader_api.settings import GLOBOMAP_RMQ_VIRTUAL_HOST
 
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class LoaderAPIFacade(object):
@@ -45,10 +45,22 @@ class LoaderAPIFacade(object):
             try:
                 for update in updates:
                     self.rabbitmq.post_message(
-                        GLOBOMAP_RMQ_EXCHANGE, GLOBOMAP_RMQ_KEY,
-                        json.dumps(update, ensure_ascii=False),
-                        headers
+                        exchange=GLOBOMAP_RMQ_EXCHANGE,
+                        key=GLOBOMAP_RMQ_KEY,
+                        message=json.dumps(update, ensure_ascii=False),
+                        headers=headers
                     )
                 return None
-            except:
+            except Exception:
+                LOGGER.exception('Failed to send updates to queue')
                 raise Exception('Failed to send updates to queue')
+
+    def publish_spec(self, queue, spec):
+        try:
+            self.rabbitmq.post_message(
+                queue=queue,
+                message=json.dumps(spec, ensure_ascii=False),
+            )
+        except Exception:
+            LOGGER.exception('Failed to send spec to queue')
+            raise Exception('Failed to send spec to queue')

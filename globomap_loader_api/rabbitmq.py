@@ -13,7 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import logging
+
 import pika
+
+LOGGER = logging.getLogger(__name__)
 
 
 class RabbitMQClient(object):
@@ -31,25 +35,55 @@ class RabbitMQClient(object):
             self._conn = pika.BlockingConnection(self._params)
             self._channel = self._conn.channel()
 
-    def _publish(self, exchange_name, key, message, headers):
+    def _publish_exchange(self, **kwargs):
         self._channel.confirm_delivery()
         published = self._channel.basic_publish(
-            exchange=exchange_name,
-            routing_key=key,
-            body=message,
+            exchange=kwargs.get('exchange'),
+            routing_key=kwargs.get('key'),
+            body=kwargs.get('message'),
             properties=pika.BasicProperties(
                 delivery_mode=2,
-                headers=headers
+                headers=kwargs.get('headers')
             ),
             mandatory=True
         )
         return published
 
-    def post_message(self, exchange_name, key, message, headers):
+    def _publish_queue(self, **kwargs):
+        self._channel.confirm_delivery()
+        published = self._channel.basic_publish(
+            exchange='',
+            routing_key=kwargs.get('queue'),
+            body=kwargs.get('message'),
+            properties=pika.BasicProperties(
+                delivery_mode=2,
+                headers=kwargs.get('headers')
+            ),
+            mandatory=True
+        )
+        return published
+
+    def post_message(self, **kwargs):
         """Publish message, reconnecting if necessary."""
+        if kwargs.get('exchange'):
+            publish = self._publish_exchange
+        else:
+            publish = self._publish_queue
 
         try:
-            return self._publish(exchange_name, key, message, headers)
+            return publish(**kwargs)
         except pika.exceptions.ConnectionClosed:
             self.connect()
-            return self._publish(exchange_name, key, message, headers)
+            return publish(**kwargs)
+
+    def setup_queue(self, queue_name):
+        """Setup the queue on RabbitMQ by invoking the Queue.Declare RPC
+        command. When it is complete, the on_queue_declareok method will
+        be invoked by pika.
+        :param str|unicode queue_name: The name of the queue to declare.
+        """
+        LOGGER.info('Declaring queue %s', queue_name)
+        self._channel.queue_declare(
+            queue=queue_name,
+            arguments={'x-message-ttl': 1000}
+        )
