@@ -28,6 +28,11 @@ class ApiTestCase(unittest.TestCase):
     def setUp(self):
         self.loader_api_facade = patch(
             'globomap_loader_api.app.LoaderAPIFacade._get_rabbit_mq_client').start()
+        self.validate_updates = patch(
+            'globomap_loader_api.app.LoaderAPIFacade.validate_updates').start()
+        self.validate_updates.return_value = {
+            'user': {'name': 'test'}
+        }
         self.app = create_app().test_client()
         self._mock_token()
 
@@ -96,4 +101,6 @@ class ApiTestCase(unittest.TestCase):
         validate_token = patch(
             'globomap_loader_api.api.v2.auth.decorators.validate_token').start()
         validate_token.return_value.get_token_data_details.return_value = {
-            'roles': [{'name': LOADER_UPDATE}]}
+            'roles': [{'name': LOADER_UPDATE}],
+            'user': {'name': 'test'}
+        }

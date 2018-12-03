@@ -16,6 +16,8 @@
 import json
 import logging
 
+from globomap_loader_api.api.globomap import GloboMapClient
+from globomap_loader_api.api.util import load
 from globomap_loader_api.rabbitmq import RabbitMQClient
 from globomap_loader_api.settings import GLOBOMAP_RMQ_EXCHANGE
 from globomap_loader_api.settings import GLOBOMAP_RMQ_HOST
@@ -24,6 +26,7 @@ from globomap_loader_api.settings import GLOBOMAP_RMQ_PASSWORD
 from globomap_loader_api.settings import GLOBOMAP_RMQ_PORT
 from globomap_loader_api.settings import GLOBOMAP_RMQ_USER
 from globomap_loader_api.settings import GLOBOMAP_RMQ_VIRTUAL_HOST
+from globomap_loader_api.settings import SPECS
 
 
 LOGGER = logging.getLogger(__name__)
@@ -40,7 +43,12 @@ class LoaderAPIFacade(object):
             GLOBOMAP_RMQ_PASSWORD, GLOBOMAP_RMQ_VIRTUAL_HOST
         )
 
-    def publish_updates(self, updates, headers):
+    def publish_updates(self, updates, headers, auth_inst=None):
+        if auth_inst:
+            token_data = auth_inst.get_token_data_details()
+            user_name = token_data['user']['name']
+            self.validate_updates(updates, user_name)
+            headers['user'] = user_name
         if updates:
             try:
                 for update in updates:
@@ -56,6 +64,7 @@ class LoaderAPIFacade(object):
                 raise Exception('Failed to send updates to queue')
 
     def publish_spec(self, queue, spec):
+        self.rabbitmq.setup_queue(queue)
         try:
             self.rabbitmq.post_message(
                 queue=queue,
@@ -64,3 +73,34 @@ class LoaderAPIFacade(object):
         except Exception:
             LOGGER.exception('Failed to send spec to queue')
             raise Exception('Failed to send spec to queue')
+
+    def get_spec(self, queue):
+        self.rabbitmq.setup_queue(queue)
+        spec, delivery_tag = self.rabbitmq.get_message(queue)
+        if not spec:
+            gmap = GloboMapClient()
+            collections = gmap.get_collections(queue)
+            collections = [collection['name']
+                           for collection in collections['collections']]
+            collections = json.dumps(collections)
+            edges = gmap.get_edges(queue)
+            edges = [edge['name'] for edge in edges['collections']]
+            edges = json.dumps(edges)
+            spec = self.create_spec(collections, edges)
+            self.rabbitmq.post_message(queue=queue, message=spec)
+            spec = json.loads(spec)
+        else:
+            self.rabbitmq.nack_message(delivery_tag)
+        return spec
+
+    def validate_updates(self, updates, user_name):
+        spec = self.get_spec(queue=user_name)
+        validator = load(spec)
+        validator(updates)
+
+    def create_spec(self, collections, edges):
+        file = open(SPECS.get('updates_user'))
+        s = file.read()
+        data = s.replace('{{collections}}', collections).replace(
+            '{{edges}}', edges)
+        return data

@@ -35,12 +35,6 @@ ns = api.namespace(
     required=True,
     default='Token token='
 )
-@api.header(
-    'x-driver-name',
-    'Name of Driver',
-    required=True,
-    default=''
-)
 class Updates(Resource):
 
     @api.doc(responses={
@@ -53,18 +47,13 @@ class Updates(Resource):
     @permission_classes((permissions.Update,))
     @api.expect(api.schema_model('PostUpdates',
                                  util.get_dict(SPECS.get('updates'))))
-    def post(self):
+    def post(self, **kwargs):
         """Post a list of messages."""
-
         response_header = {'X-REQUEST-ID': util.create_request_id()}
-
+        auth_inst = kwargs['auth_inst']
         data = request.get_json()
-        driver_name = request.headers.get('X-DRIVER-NAME', '*')
-        headers = {
-            'X-DRIVER-NAME': driver_name
-        }
-        headers.update(response_header)
-        app.config['LOADER_RMQ'].publish_updates(data, headers)
+        app.config['LOADER_RMQ'].publish_updates(
+            updates=data, headers=response_header, auth_inst=auth_inst)
         res = {
             'message': 'Updates published successfully',
         }

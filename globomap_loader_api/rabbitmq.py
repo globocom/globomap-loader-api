@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import json
 import logging
 
 import pika
@@ -85,5 +86,16 @@ class RabbitMQClient(object):
         LOGGER.info('Declaring queue %s', queue_name)
         self._channel.queue_declare(
             queue=queue_name,
-            arguments={'x-message-ttl': 1000}
+            arguments={'x-message-ttl': 1800000}
         )
+
+    def get_message(self, queue):
+        method_frame, _, body = self._channel.basic_get(queue)
+        if body:
+            body = json.loads(body)
+            return body, method_frame.delivery_tag
+        else:
+            return None, None
+
+    def nack_message(self, delivery_tag):
+        self._channel.basic_nack(delivery_tag)

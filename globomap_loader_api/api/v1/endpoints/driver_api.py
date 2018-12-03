@@ -39,7 +39,7 @@ class Updates(Resource):
                 'X-DRIVER-NAME': driver_name
             }
             app.config['LOADER_RMQ'].publish_updates(
-                data, headers)
+                updates=data, headers=headers)
             res = {
                 'message': 'Updates published successfully',
             }

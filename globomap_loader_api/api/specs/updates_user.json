@@ -1,0 +1,438 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "items": {
+        "anyOf": [
+            {
+                "$ref": "#/definitions/collectionPost"
+            },
+            {
+                "$ref": "#/definitions/collectionUpdate"
+            },
+            {
+                "$ref": "#/definitions/collectionDelete"
+            },
+            {
+                "$ref": "#/definitions/collectionClear"
+            },
+            {
+                "$ref": "#/definitions/edgePost"
+            },
+            {
+                "$ref": "#/definitions/edgeUpdate"
+            },
+            {
+                "$ref": "#/definitions/edgeDelete"
+            },
+            {
+                "$ref": "#/definitions/edgeClear"
+            }
+        ]
+    },
+    "type": "array",
+    "minItems": 1,
+    "definitions": {
+        "collectionPost": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "enum": [
+                        "CREATE"
+                    ],
+                    "type": "string"
+                },
+                "collection": {
+                    "type": "string",
+                    "enum": {{collections}}
+                },
+                "element": {
+                    "$ref": "#/definitions/document"
+                },
+                "type": {
+                    "enum": [
+                        "collections"
+                    ],
+                    "type": "string"
+                }
+            },
+            "required": [
+                "action",
+                "collection",
+                "element",
+                "type"
+            ]
+        },
+        "collectionUpdate": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "enum": [
+                        "UPDATE",
+                        "PATCH"
+                    ],
+                    "type": "string"
+                },
+                "collection": {
+                    "type": "string",
+                    "enum": {{collections}}
+                },
+                "element": {
+                    "$ref": "#/definitions/document"
+                },
+                "type": {
+                    "enum": [
+                        "collections"
+                    ],
+                    "type": "string"
+                },
+                "key": {
+                    "minimum": 1,
+                    "pattern": "^([a-zA-Z0-9=._-]){1,}$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "action",
+                "collection",
+                "element",
+                "type",
+                "key"
+            ]
+        },
+        "collectionDelete": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "enum": [
+                        "DELETE"
+                    ],
+                    "type": "string"
+                },
+                "collection": {
+                    "type": "string",
+                    "enum": {{collections}}
+                },
+                "type": {
+                    "enum": [
+                        "collections"
+                    ],
+                    "type": "string"
+                },
+                "key": {
+                    "minimum": 1,
+                    "pattern": "^([a-zA-Z0-9=._-]){1,}$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "action",
+                "collection",
+                "type",
+                "key"
+            ]
+        },
+        "collectionClear": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "enum": [
+                        "CLEAR"
+                    ],
+                    "type": "string"
+                },
+                "element": {
+                    "$ref": "#/definitions/clear"
+                },
+                "collection": {
+                    "type": "string",
+                    "enum": {{collections}}
+                },
+                "type": {
+                    "enum": [
+                        "collections"
+                    ],
+                    "type": "string"
+                },
+                "key": {
+                    "minimum": 1,
+                    "pattern": "^([a-zA-Z0-9=._-]){1,}$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "action",
+                "collection",
+                "element",
+                "type",
+                "key"
+            ]
+        },
+        "edgePost": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "enum": [
+                        "CREATE"
+                    ],
+                    "type": "string"
+                },
+                "collection": {
+                    "type": "string",
+                    "enum": {{edges}}
+                },
+                "element": {
+                    "$ref": "#/definitions/edge"
+                },
+                "type": {
+                    "enum": [
+                        "edges"
+                    ],
+                    "type": "string"
+                }
+            },
+            "required": [
+                "action",
+                "collection",
+                "element",
+                "type"
+            ]
+        },
+        "edgeUpdate": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "enum": [
+                        "UPDATE",
+                        "PATCH"
+                    ],
+                    "type": "string"
+                },
+                "collection": {
+                    "type": "string",
+                    "enum": {{edges}}
+                },
+                "element": {
+                    "$ref": "#/definitions/edge"
+                },
+                "type": {
+                    "enum": [
+                        "edges"
+                    ],
+                    "type": "string"
+                },
+                "key": {
+                    "minimum": 1,
+                    "pattern": "^([a-zA-Z0-9=._-]){1,}$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "action",
+                "collection",
+                "element",
+                "type",
+                "key"
+            ]
+        },
+        "edgeDelete": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "enum": [
+                        "DELETE"
+                    ],
+                    "type": "string"
+                },
+                "collection": {
+                    "type": "string",
+                    "enum": {{edges}}
+                },
+                "type": {
+                    "enum": [
+                        "edges"
+                    ],
+                    "type": "string"
+                },
+                "key": {
+                    "minimum": 1,
+                    "pattern": "^([a-zA-Z0-9=._-]){1,}$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "action",
+                "collection",
+                "type",
+                "key"
+            ]
+        },
+        "edgeClear": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "enum": [
+                        "CLEAR"
+                    ],
+                    "type": "string"
+                },
+                "element": {
+                    "$ref": "#/definitions/clear"
+                },
+                "collection": {
+                    "type": "string",
+                    "enum": {{edges}}
+                },
+                "type": {
+                    "enum": [
+                        "edges"
+                    ],
+                    "type": "string"
+                },
+                "key": {
+                    "minimum": 1,
+                    "pattern": "^([a-zA-Z0-9=._-]){1,}$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "action",
+                "collection",
+                "element",
+                "type",
+                "key"
+            ]
+        },
+        "document": {
+            "additionalProperties": false,
+            "type": "object",
+            "properties": {
+                "id": {
+                    "minimum": 1,
+                    "pattern": "^([a-zA-Z0-9=._-]){1,}$",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "properties": {
+                    "type": "object"
+                },
+                "properties_metadata": {
+                    "type": "object"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "name",
+                "id",
+                "provider",
+                "timestamp"
+            ]
+        },
+        "edge": {
+            "additionalProperties": false,
+            "type": "object",
+            "properties": {
+                "from": {
+                    "type": "string"
+                },
+                "id": {
+                    "minimum": 1,
+                    "pattern": "^([a-zA-Z0-9=._-]){1,}$",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "properties": {
+                    "type": "object"
+                },
+                "properties_metadata": {
+                    "type": "object"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "from",
+                "to",
+                "id",
+                "name",
+                "provider",
+                "timestamp"
+            ]
+        },
+        "clear": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "field": {
+                            "type": "string"
+                        },
+                        "operator": {
+                            "type": "string",
+                            "enum": [
+                                "LIKE",
+                                "NOTIN",
+                                "IN",
+                                "==",
+                                "!=",
+                                ">",
+                                ">=",
+                                "<",
+                                "<=",
+                                "!~",
+                                "=~"
+                            ]
+                        },
+                        "value": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "array"
+                                },
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "minimum": 1
+                        }
+                    },
+                    "required": [
+                        "field",
+                        "operator",
+                        "value"
+                    ]
+                },
+                "minItems": 1
+            },
+            "minItems": 1
+        }
+    }
+}

@@ -20,6 +20,7 @@ DRIVER_FETCH_INTERVAL = int(os.getenv('DRIVER_FETCH_INTERVAL', 60))
 GLOBOMAP_API_URL = os.getenv('GLOBOMAP_API_URL')
 GLOBOMAP_API_USERNAME = os.getenv('GLOBOMAP_API_USERNAME')
 GLOBOMAP_API_PASSWORD = os.getenv('GLOBOMAP_API_PASSWORD')
+RETRIES = os.getenv('RETRIES')
 
 GLOBOMAP_RMQ_USER = os.getenv('GLOBOMAP_RMQ_USER')
 GLOBOMAP_RMQ_PASSWORD = os.getenv('GLOBOMAP_RMQ_PASSWORD')
@@ -37,6 +38,7 @@ LOADER_UPDATE = 'globomap_loader_update'
 
 SPECS = {
     'updates': 'globomap_loader_api/api/specs/updates.json',
+    'updates_user': 'globomap_loader_api/api/specs/updates_user.json',
     'auth': 'globomap_loader_api/api/specs/auth.json',
 }
 

@@ -34,7 +34,7 @@ class TestLoaderAPIFacade(unittest.TestCase):
             loader_facade = LoaderAPIFacade()
             updates = [{'key': 'value'}, {'key2': 'value2'}]
             headers = {'header_1': 'value_1'}
-            loader_facade.publish_updates(updates, headers)
+            loader_facade.publish_updates(updates=updates, headers=headers)
 
     def test_publish_updates(self):
         rmq_mock = self.mock_rmqclient()
@@ -44,7 +44,7 @@ class TestLoaderAPIFacade(unittest.TestCase):
 
         updates = [{'key': 'value'}, {'key2': 'value2'}]
         headers = {'header_1': 'value_1'}
-        loader_facade.publish_updates(updates, headers)
+        loader_facade.publish_updates(updates=updates, headers=headers)
 
         loader_facade.rabbitmq.post_message.assert_has_calls([
             call(exchange='globomap-updates-exchange',

@@ -44,6 +44,9 @@ All of the environment variables below must be set for the application to work p
 | GLOBOMAP_RMQ_ERROR_EXCHANGE        | RabbitMQ error exchange name                                              | globomap-errors-exchange                |
 | GLOBOMAP_RMQ_BINDING_KEY           | RabbitMQ generic driver API binding key                                   | globomap.updates (default)              |
 | VARIABLES of globomap-auth-manager | [globomap-auth-manager](https://github.com/globocom/globomap-auth-manager)| --                                      |
+| GLOBOMAP_API_URL                   | GloboMap API address                                                      | http://globomap.domain.com              |
+| GLOBOMAP_API_USERNAME              | GloboMap API username                                                     | username                                |
+| GLOBOMAP_API_PASSWORD              | GloboMap API password                                                     | xyz                                     |
 
  ## Documentation
 [API](https://github.com/globocom/globomap-core-loader/blob/master/doc/api.md)

@@ -40,6 +40,5 @@ class CreateAuth(Resource):
         data = request.get_json()
         username = data.get('username')
         password = data.get('password')
-
         token = facade.create_token(username, password)
         return token, 200

@@ -30,6 +30,7 @@ def permission_classes(permission_classes):
             if auth_inst:
                 for permission_class in permission_classes:
                     permission_class(auth_inst)
+            kwargs['auth_inst'] = auth_inst
             return func(self, *args, **kwargs)
         return inner
     return outer
