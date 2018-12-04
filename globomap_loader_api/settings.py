@@ -33,7 +33,7 @@ GLOBOMAP_RMQ_EXCHANGE = os.getenv(
 GLOBOMAP_RMQ_ERROR_EXCHANGE = os.getenv('GLOBOMAP_RMQ_ERROR_EXCHANGE')
 GLOBOMAP_RMQ_KEY = os.getenv('GLOBOMAP_RMQ_BINDING_KEY', 'globomap.updates')
 
-LOADER_UPDATE = 'globomap_loader_update'
+LOADER_UPDATE = 'globomap_loader'
 
 SPECS = {
     'updates': 'globomap_loader_api/api/specs/updates.json',
