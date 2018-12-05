@@ -21,6 +21,7 @@ from flask_restplus import Resource
 from globomap_loader_api.api.facade import LoaderAPIFacade
 from globomap_loader_api.api.v2 import api
 from globomap_loader_api.api.v2.auth.facade import Auth
+from globomap_loader_api.settings import SIMPLE_HEALTHCHECK
 
 
 ns = api.namespace(
@@ -42,6 +43,11 @@ class Healthcheck(Resource):
         503: 'Service Unavailable',
     })
     def get(self):
+        # Temporary Troubleshooting kubernetes healthcheck
+        if SIMPLE_HEALTHCHECK:
+            return 'WORKING', 200
+        # Temporary Troubleshooting kubernetes healthcheck
+
         deps = _list_deps()
         problems = {}
         for key in deps:
