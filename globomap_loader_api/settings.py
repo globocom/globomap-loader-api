@@ -73,3 +73,7 @@ LOGGING = {
         }
     }
 }
+
+# Temporary Troubleshooting kubernetes healthcheck
+SIMPLE_HEALTHCHECK = os.getenv('SIMPLE_HEALTHCHECK', False)
+# Temporary Troubleshooting kubernetes healthcheck
