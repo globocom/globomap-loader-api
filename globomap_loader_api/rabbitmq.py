@@ -13,12 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import functools
 import json
 import logging
 
 import pika
 
 LOGGER = logging.getLogger(__name__)
+
+
+def with_reconnect(func):
+    @functools.wraps(func)
+    def inner(self, *args, **kwargs):
+        try:
+            return func(self, *args, **kwargs)
+        except pika.exceptions.ConnectionClosed:
+            self.connect()
+            return func(self, *args, **kwargs)
+    return inner
 
 
 class RabbitMQClient(object):
@@ -32,9 +44,9 @@ class RabbitMQClient(object):
         self.connect()
 
     def connect(self):
-        if not self._conn or self._conn.is_closed:
-            self._conn = pika.BlockingConnection(self._params)
-            self._channel = self._conn.channel()
+        LOGGER.info('Connecting with rabbitmq %s', str(self._params))
+        self._conn = pika.BlockingConnection(self._params)
+        self._channel = self._conn.channel()
 
     def _publish_exchange(self, **kwargs):
         self._channel.confirm_delivery()
@@ -64,6 +76,7 @@ class RabbitMQClient(object):
         )
         return published
 
+    @with_reconnect
     def post_message(self, **kwargs):
         """Publish message, reconnecting if necessary."""
         if kwargs.get('exchange'):
@@ -71,24 +84,23 @@ class RabbitMQClient(object):
         else:
             publish = self._publish_queue
 
-        try:
-            return publish(**kwargs)
-        except pika.exceptions.ConnectionClosed:
-            self.connect()
-            return publish(**kwargs)
+        return publish(**kwargs)
 
+    @with_reconnect
     def setup_queue(self, queue_name):
         """Setup the queue on RabbitMQ by invoking the Queue.Declare RPC
         command. When it is complete, the on_queue_declareok method will
         be invoked by pika.
         :param str|unicode queue_name: The name of the queue to declare.
         """
+
         LOGGER.info('Declaring queue %s', queue_name)
         self._channel.queue_declare(
             queue=queue_name,
             arguments={'x-message-ttl': 1800000}
         )
 
+    @with_reconnect
     def get_message(self, queue):
         method_frame, _, body = self._channel.basic_get(queue)
         if body:
@@ -97,5 +109,6 @@ class RabbitMQClient(object):
         else:
             return None, None
 
+    @with_reconnect
     def nack_message(self, delivery_tag):
         self._channel.basic_nack(delivery_tag)

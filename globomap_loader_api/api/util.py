@@ -16,8 +16,6 @@
 import json
 import uuid
 
-from jsonspec.validators import load
-
 
 def get_dict(json_file):
 
@@ -25,35 +23,6 @@ def get_dict(json_file):
         data = json.load(data_file)
 
     return data
-
-
-def json_validate(json_file):
-
-    with open(json_file) as data_file:
-        data = json.load(data_file)
-        validator = load(data)
-
-    return validator
-
-
-def validate(error):
-    msg = []
-    if error.flatten():
-        for pointer, reasons in error.flatten().items():
-            msg.append({
-                'error_pointer': pointer,
-                'error_reasons': list(reasons)
-            })
-    else:
-        msg.append({
-            'error_pointer': error[0],
-            'error_reasons': list(error[1])
-        })
-    res = {
-        'errors': msg
-    }
-
-    return res
 
 
 def create_request_id():

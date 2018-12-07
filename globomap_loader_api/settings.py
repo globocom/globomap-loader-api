@@ -43,6 +43,9 @@ SPECS = {
 }
 
 SENTRY_DSN = os.getenv('SENTRY_DSN')
+
+LOG_LEVEL = os.getenv('LOG_LEVEL', 'WARNING')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -54,7 +57,7 @@ LOGGING = {
     },
     'handlers': {
         'default': {
-            'level': 'WARNING',
+            'level': LOG_LEVEL,
             'class': 'logging.StreamHandler',
             'stream': 'ext://sys.stdout',
             'formatter': 'verbose',
@@ -68,7 +71,7 @@ LOGGING = {
     'loggers': {
         'globomap_loader_api': {
             'handlers': ['default', 'sentry'],
-            'level': 'WARNING',
+            'level': LOG_LEVEL,
             'propagate': True
         }
     }

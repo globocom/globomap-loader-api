@@ -16,8 +16,10 @@
 import json
 import logging
 
+from jsonschema import Draft4Validator
+from jsonschema.exceptions import ValidationError
+
 from globomap_loader_api.api.globomap import GloboMapClient
-from globomap_loader_api.api.util import load
 from globomap_loader_api.rabbitmq import RabbitMQClient
 from globomap_loader_api.settings import GLOBOMAP_RMQ_EXCHANGE
 from globomap_loader_api.settings import GLOBOMAP_RMQ_HOST
@@ -95,8 +97,16 @@ class LoaderAPIFacade(object):
 
     def validate_updates(self, updates, user_name):
         spec = self.get_spec(queue=user_name)
-        validator = load(spec)
-        validator(updates)
+        LOGGER.debug('spec %s', json.dumps(spec))
+        LOGGER.debug('updates %s', json.dumps(updates))
+
+        try:
+            Draft4Validator(spec).validate(updates)
+        except ValidationError as err:
+            raise ValidationError(err.message, schema=spec)
+
+        # validator = load(spec)
+        # validator(updates)
 
     def create_spec(self, collections, edges):
         file = open(SPECS.get('updates_user'))

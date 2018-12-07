@@ -42,9 +42,9 @@ class GloboMapClient(object):
         self.edge = Edge(auth=self.auth)
 
     def get_collections(self, user):
-        query = [[{'field': 'user', 'operator': '==', 'value': user}]]
+        query = [[{'field': 'users', 'operator': 'IN', 'value': user}]]
         return self.coll.search(query, page=1, per_page=100)
 
     def get_edges(self, user):
-        query = [[{'field': 'user', 'operator': '==', 'value': user}]]
+        query = [[{'field': 'users', 'operator': 'IN', 'value': user}]]
         return self.edge.search(query, page=1, per_page=100)

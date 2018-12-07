@@ -1,5 +1,5 @@
 from globomap_auth_manager import exceptions
-from jsonspec.validators.exceptions import ValidationError
+from jsonschema.exceptions import ValidationError
 from werkzeug.exceptions import BadRequest
 
 from globomap_loader_api.api import util
@@ -54,7 +54,12 @@ def handle_validationerror_exception(error):
 
     response_header = {'X-REQUEST-ID': util.create_request_id()}
 
-    return {'message': util.validate(error)}, 400, response_header
+    message = {
+        'reason': error.message,
+        'schema': error.schema
+    }
+
+    return {'message': message}, 400, response_header
 
 
 @api.errorhandler(BadRequest)

@@ -16,10 +16,8 @@
 from flask import current_app as app
 from flask import request
 from flask_restplus import Resource
-from jsonspec.validators.exceptions import ValidationError
 from werkzeug.exceptions import BadRequest
 
-from globomap_loader_api.api import util
 from globomap_loader_api.api.v1 import api
 
 
@@ -45,10 +43,6 @@ class Updates(Resource):
             }
 
             return res, 202
-
-        except ValidationError as error:
-            app.logger.exception('Error sending updates to rabbitmq')
-            api.abort(400, errors=util.validate(error))
         except BadRequest as err:
             api.abort(400, errors=err.description)
         except:
