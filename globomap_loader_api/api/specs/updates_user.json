@@ -151,19 +151,13 @@
                         "collections"
                     ],
                     "type": "string"
-                },
-                "key": {
-                    "minimum": 1,
-                    "pattern": "^([a-zA-Z0-9=._-]){1,}$",
-                    "type": "string"
                 }
             },
             "required": [
                 "action",
                 "collection",
                 "element",
-                "type",
-                "key"
+                "type"
             ]
         },
         "edgePost": {
@@ -286,19 +280,13 @@
                         "edges"
                     ],
                     "type": "string"
-                },
-                "key": {
-                    "minimum": 1,
-                    "pattern": "^([a-zA-Z0-9=._-]){1,}$",
-                    "type": "string"
                 }
             },
             "required": [
                 "action",
                 "collection",
                 "element",
-                "type",
-                "key"
+                "type"
             ]
         },
         "document": {
