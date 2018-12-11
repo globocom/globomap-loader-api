@@ -356,7 +356,6 @@
                 "from",
                 "to",
                 "id",
-                "name",
                 "provider",
                 "timestamp"
             ]
