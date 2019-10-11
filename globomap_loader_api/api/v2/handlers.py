@@ -30,21 +30,21 @@ def handle_auth_manager_invalidtoken_exception(error):
 @api.errorhandler(exceptions.AuthException)
 @api.header('X-REQUEST-ID', 'Request ID')
 def handle_auth_manager_auth_exception(error):
-    """Return a custom message and 503 status code"""
+    """Return a custom message and 403 status code"""
 
     response_header = {'X-REQUEST-ID': util.create_request_id()}
 
-    return {'message': error.message}, 503, response_header
+    return {'message': error.message}, 403, response_header
 
 
 @api.errorhandler(AuthException)
 @api.header('X-REQUEST-ID', 'Request ID')
 def handle_auth_exception(error):
-    """Return a custom message and 503 status code"""
+    """Return a custom message and 403 status code"""
 
     response_header = {'X-REQUEST-ID': util.create_request_id()}
 
-    return {'message': error.message}, 503, response_header
+    return {'message': error.message}, 403, response_header
 
 
 @api.errorhandler(ValidationError)
