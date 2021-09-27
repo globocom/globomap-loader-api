@@ -47,6 +47,7 @@
             "type": "object"
           },
           "provider": {
+            "pattern": "^([a-z_]){1,}$",
             "type": "string"
           },
           "timestamp": {

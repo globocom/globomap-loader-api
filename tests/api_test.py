@@ -87,6 +87,21 @@ class ApiTestCase(unittest.TestCase):
         self.assertEqual(500, response.status_code)
         self.assertEqual(1, rabbit_mock.post_message.call_count)
 
+    def test_send_updates_invalid_provider(self):
+        rabbit_mock = self._mock_rabbitmq_client(True)
+        updates = [open_json('tests/json/driver/driver_output_create.json')]
+        updates[0]["element"]["provider"] = "globo.map"
+        response = self.app.post(
+            '/v2/updates/',
+            data=json.dumps(updates),
+            headers={'Content-Type': 'application/json'}
+        )
+
+        response_json = json.loads(response.data)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual('Input payload validation failed',
+                         response_json['message'])
+
     def _mock_rabbitmq_client(self, data=None):
         rabbitmq_mock = self.loader_api_facade.return_value
 
