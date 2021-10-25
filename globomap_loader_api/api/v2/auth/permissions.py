@@ -29,9 +29,7 @@ class BasePermission(object):
 
     def has_perm(self, token, role):
         roles = [usr_role['name'] for usr_role in token['roles']]
-        if role in roles:
-            return True
-        return False
+        return (role in roles)
 
     def validate_token(self):
         token_data = self.auth.get_token_data_details()
